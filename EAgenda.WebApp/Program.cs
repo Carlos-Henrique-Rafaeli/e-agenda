@@ -10,6 +10,8 @@ using EAgenda.Infraestrutura.Arquivos.ModuloContato;
 using EAgenda.Infraestrutura.Arquivos.ModuloDespesa;
 using EAgenda.Infraestrutura.Arquivos.ModuloTarefa;
 using EAgenda.WebApp.ActionFilters;
+using Serilog;
+using Serilog.Events;
 
 namespace EAgenda.WebApp;
 
@@ -19,8 +21,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllersWithViews(options => 
-        { 
+        builder.Services.AddControllersWithViews(options =>
+        {
             options.Filters.Add<ValidarModeloAttribute>();
         });
 
@@ -31,11 +33,32 @@ public class Program
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaEmArquivo>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaEmArquivo>();
 
+        var pastaRaiz = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "AcademiaProgramador2025");
+
+        var caminhoLog = Path.Combine(pastaRaiz, "EAgenda", "erro.log");
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.Console()
+            .WriteTo.File(caminhoLog, LogEventLevel.Error)
+            .CreateLogger();
+
+        builder.Logging.ClearProviders();
+
+        builder.Services.AddSerilog();
+
         var app = builder.Build();
+
+        if (!app.Environment.IsDevelopment())
+            app.UseExceptionHandler("/erro");
+        else
+            app.UseDeveloperExceptionPage();
 
         app.UseAntiforgery();
         app.UseStaticFiles();
         app.UseHttpsRedirection();
+
         app.UseRouting();
         app.MapDefaultControllerRoute();
 
