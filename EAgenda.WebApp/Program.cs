@@ -10,8 +10,7 @@ using EAgenda.Infraestrutura.Arquivos.ModuloContato;
 using EAgenda.Infraestrutura.Arquivos.ModuloDespesa;
 using EAgenda.Infraestrutura.Arquivos.ModuloTarefa;
 using EAgenda.WebApp.ActionFilters;
-using Serilog;
-using Serilog.Events;
+using EAgenda.WebApp.DependencyInjection;
 
 namespace EAgenda.WebApp;
 
@@ -24,6 +23,7 @@ public class Program
         builder.Services.AddControllersWithViews(options =>
         {
             options.Filters.Add<ValidarModeloAttribute>();
+            options.Filters.Add<LogarAcaoAttribute>();
         });
 
         builder.Services.AddScoped<ContextoDados>((_) => new ContextoDados(true));
@@ -33,20 +33,7 @@ public class Program
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaEmArquivo>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaEmArquivo>();
 
-        var pastaRaiz = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "AcademiaProgramador2025");
-
-        var caminhoLog = Path.Combine(pastaRaiz, "EAgenda", "erro.log");
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .WriteTo.Console()
-            .WriteTo.File(caminhoLog, LogEventLevel.Error)
-            .CreateLogger();
-
-        builder.Logging.ClearProviders();
-
-        builder.Services.AddSerilog();
+        builder.Services.AddSerilogConfig(builder.Logging);
 
         var app = builder.Build();
 
