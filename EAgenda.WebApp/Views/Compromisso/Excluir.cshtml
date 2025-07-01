@@ -2,7 +2,7 @@
 
 @{
     Layout = "_Layout";
-    ViewBag.Titulo = "Exclusão de Compromissos";
+    ViewBag.Titulo = "Exclusão de Compromisso";
 }
 
 <hr />
@@ -12,7 +12,7 @@
             <div class="card-body p-md-5">
                 <h3>Formulário de Exclusão</h3>
 
-                <p class="mt-4">Você deseja realmente excluir o contato "@Model.Assunto"?</p>
+                <p class="mt-4">Você deseja realmente excluir o compromisso "@Model.Assunto"?</p>
 
                 <form asp-action="excluir" asp-route-id="@Model.Id">
                     <div class="form-group d-flex align-items-center justify-content-end gap-3">

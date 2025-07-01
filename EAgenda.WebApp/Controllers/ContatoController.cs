@@ -1,5 +1,5 @@
 ﻿using EAgenda.Dominio.ModuloContato;
-using EAgenda.Dominio.Modulo_Compromissos;
+using EAgenda.Dominio.ModuloCompromisso;
 using EAgenda.Infraestrutura.Arquivos.Compartilhado;
 using EAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -103,37 +103,23 @@ public class ContatoController : Controller
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id)
     {
-        var contato = repositorioContato.SelecionarRegistroPorId(id);
+        var registroSelecionado = repositorioContato.SelecionarRegistroPorId(id);
 
-        if (contato == null)
-            return NotFound();
+        var excluirVM = new ExcluirContatoViewModel(
+            registroSelecionado.Id,
+            registroSelecionado.Nome
+            );
 
-        // Verifica se contato tem compromissos vinculados
-        var compromissosDoContato = repositorioCompromisso.SelecionarRegistros()
-            .Where(c => c.Contatos.Any(ct => ct.Id == id)).ToList();
-
-        var vm = new ExcluirContatoViewModel(contato.Id, contato.Nome)
-        {
-            TemCompromissos = compromissosDoContato.Any()
-        };
-
-        return View(vm);
+        return View(excluirVM);
     }
 
     [HttpPost("excluir/{id:guid}")]
-    public IActionResult ExcluirConfirmado(Guid id, ExcluirContatoViewModel vm)
+    [ValidateAntiForgeryToken]
+    public IActionResult ExcluirConfirmado(Guid id)
     {
-        var compromissosDoContato = repositorioCompromisso.SelecionarRegistros()
-            .Where(c => c.Contatos.Any(ct => ct.Id == id)).ToList();
-
-        if (compromissosDoContato.Any())
-        {
-            TempData["ErroExclusao"] = "Não é possível excluir o contato porque ele possui compromissos vinculados.";
-            return RedirectToAction(nameof(Excluir), new { id });
-        }
-
         repositorioContato.ExcluirRegistro(id);
 
         return RedirectToAction(nameof(Index));
     }
+
 }

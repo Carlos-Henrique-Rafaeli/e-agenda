@@ -3,7 +3,7 @@ using System.Text.Json;
 using EAgenda.Dominio.ModuloContato;
 using EAgenda.Dominio.ModuloTarefa;
 using EAgenda.Dominio.ModuloCategoria;
-using EAgenda.Dominio.Modulo_Compromissos;
+using EAgenda.Dominio.ModuloCompromisso;
 using EAgenda.Dominio.ModuloDespesa;
 
 namespace EAgenda.Infraestrutura.Arquivos.Compartilhado;

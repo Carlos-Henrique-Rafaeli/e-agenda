@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAgenda.Dominio", "EAgenda.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAgenda.Infraestrutura.Arquivos", "EAgenda.Infraestrutura.Arquivos\EAgenda.Infraestrutura.Arquivos.csproj", "{F1EE2CEB-4012-4B37-BCC1-62F1D460533F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAgenda.Infraestrutura.SqlServer", "EAgenda.Infraestrutura.SqlServer\EAgenda.Infraestrutura.SqlServer.csproj", "{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F1EE2CEB-4012-4B37-BCC1-62F1D460533F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1EE2CEB-4012-4B37-BCC1-62F1D460533F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1EE2CEB-4012-4B37-BCC1-62F1D460533F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +47,7 @@ Global
 		{B5A870CA-4E35-4BED-8AF4-73C9112ACE6A} = {ED6F6957-462C-4083-B889-481D5FF8253F}
 		{D8D99DF8-52DE-4C7C-A516-262A0BD1D65A} = {B1EAADB7-453A-4CF6-A4EA-12C781EE5F5F}
 		{F1EE2CEB-4012-4B37-BCC1-62F1D460533F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF462154-9DE2-4FA8-A2C0-3E6E839BF7D3}

@@ -1,4 +1,4 @@
-﻿@model VisualizarCompromissoViewModel
+﻿@model VisualizarCompromissosViewModel
 
 @{
     Layout = "_Layout";
@@ -20,11 +20,16 @@
         <div class="col-12 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <p class="card-text"><span class="fw-semibold">Nome:</span> @item.Assunto</p>
-                    <p class="card-text"><span class="fw-semibold">Data de ocorrência:</span> @item.DataDeOcorrencia</p>
-                    <p class="card-text"><span class="fw-semibold">Hora de ínicio:</span> @item.HoraDeInicio</p>
-                    <p class="card-text"><span class="fw-semibold">Hora de término:</span> @item.HoraDeTermino</p>
-                    <p class="card-text"><span class="fw-semibold">Tipo de compromisso:</span> @item.TipoDeCompromisso</p>
+                    <h5 class="card-title">@item.Assunto</h5>
+                    <p class="card-text mb-0"><span class="fw-semibold">Data de Ocorrência:</span> @item.Data.ToShortDateString()</p>
+                    <p class="card-text mb-0"><span class="fw-semibold">Horário de Início:</span> @item.HoraInicio.ToString(@"hh\:mm")</p>
+                    <p class="card-text mb-0"><span class="fw-semibold">Horário de Término:</span> @item.HoraTermino.ToString(@"hh\:mm")</p>
+                    <p class="card-text mb-0"><span class="fw-semibold">Tipo de Compromisso:</span> @item.Tipo.ToString()</p>
+
+                    @if (!string.IsNullOrWhiteSpace(item.Contato))
+                    {
+                        <p class="card-text"><span class="fw-semibold">Contato:</span> @item.Contato</p>
+                    }
 
                     <span class="d-flex gap-1 justify-content-end mt-4">
                         <a href="/compromissos/editar/@item.Id" class="btn-edit">

@@ -1,4 +1,4 @@
-﻿using EAgenda.Dominio.Modulo_Compromissos;
+﻿using EAgenda.Dominio.ModuloCompromisso;
 using EAgenda.Infraestrutura.Arquivos.Compartilhado;
 
 namespace EAgenda.Infraestrutura.Arquivos.ModuloCompromisso;

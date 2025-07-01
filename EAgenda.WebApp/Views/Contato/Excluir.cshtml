@@ -12,7 +12,6 @@
             <div class="card-body p-md-5">
                 <h3>Formulário de Exclusão</h3>
 
-               
                 @if (TempData["ErroExclusao"] != null)
                 {
                     <div class="alert alert-danger">
@@ -22,7 +21,7 @@
 
                 <p class="mt-4">Você deseja realmente excluir o contato "@Model.Nome"?</p>
 
-                <form asp-action="ExcluirConfirmado" asp-route-id="@Model.Id" method="post">
+                <form asp-action="Excluir" asp-route-id="@Model.Id">
                     <div class="form-group d-flex align-items-center justify-content-end gap-3">
                         <a href="/contatos" class="text-coffee">Voltar para a listagem</a>
                         <button type="submit" class="btn-delete px-5">Confirmar</button>
