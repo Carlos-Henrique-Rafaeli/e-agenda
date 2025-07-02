@@ -21,7 +21,7 @@ public static class TarefaExtensions
             tarefa.DataConclusao,
             tarefa.EstaConcluida,
             tarefa.PercentualConcluido,
-            tarefa.ItensTarefas
+            tarefa.Itens
         );
     }
 }

@@ -28,7 +28,7 @@
 
                     <div class="mt-2">
                         <label class="control-label">
-                            <strong>Data de Conclusão:</strong> @(Model.EstaConcluida ? Model.DataConclusao.ToShortDateString() : "Não concluída")
+                            <strong>Data de Conclusão:</strong> @(Model.EstaConcluida ? Model.DataConclusao?.ToShortDateString() : "Não concluída")
                         </label>
                     </div>
                 </div>

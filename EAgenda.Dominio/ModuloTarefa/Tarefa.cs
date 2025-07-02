@@ -7,26 +7,19 @@ public class Tarefa : EntidadeBase<Tarefa>
     public string Titulo { get; set; }
     public Prioridade Prioridade { get; set; }
     public DateTime DataCriacao { get; set; }
-    public DateTime DataConclusao { get; set; }
+    public DateTime? DataConclusao { get; set; }
     public bool EstaConcluida { get; set; }
-    public List<ItemTarefa> ItensTarefas { get; set; } = new List<ItemTarefa>();
+    public List<ItemTarefa> Itens { get; set; } = new List<ItemTarefa>();
     public decimal PercentualConcluido { get 
         {
-            if (ItensTarefas == null || ItensTarefas.Count == 0)
-                return 0;
+            if (Itens.Count == 0)
+                return default;
 
-            int concluidos = 0;
+            int qtdConcluidos = Itens.Count(i => i.EstaConcluida);
 
-            foreach (var item in ItensTarefas)
-            {
-                if (item.EstaConcluida)
-                    concluidos++;
-            }
+            decimal percentualBase = qtdConcluidos / (decimal)Itens.Count * 100;
 
-            decimal total = ItensTarefas.Count;
-            decimal concluido = concluidos;
-
-            return (concluido / total) * 100;
+            return Math.Round(percentualBase, 2);
         } 
     }
     
@@ -42,11 +35,61 @@ public class Tarefa : EntidadeBase<Tarefa>
         DataCriacao = dataCriacao;
         EstaConcluida = false;
     }
-    
+
     public void Concluir()
     {
         EstaConcluida = true;
         DataConclusao = DateTime.Now;
+    }
+
+    public void MarcarPendente()
+    {
+        EstaConcluida = false;
+        DataConclusao = null;
+    }
+
+    public ItemTarefa? ObterItem(Guid idItem)
+    {
+        return Itens.Find(i => i.Id.Equals(idItem));
+    }
+
+    public ItemTarefa AdicionarItem(string titulo)
+    {
+        var item = new ItemTarefa(titulo, this);
+
+        Itens.Add(item);
+
+        MarcarPendente();
+
+        return item;
+    }
+
+    public ItemTarefa AdicionarItem(ItemTarefa item)
+    {
+        Itens.Add(item);
+
+        return item;
+    }
+
+    public bool RemoverItem(ItemTarefa item)
+    {
+        Itens.Remove(item);
+
+        MarcarPendente();
+
+        return true;
+    }
+
+    public void ConcluirItem(ItemTarefa item)
+    {
+        item.Concluir();
+    }
+
+    public void MarcarItemPendente(ItemTarefa item)
+    {
+        item.MarcarPendente();
+
+        MarcarPendente();
     }
 
     public override void AtualizarRegistro(Tarefa registroEditado)

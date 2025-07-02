@@ -45,7 +45,7 @@
                     <h5 class="card-title">Titulo: @item.Titulo</h5>
                     <p class="card-text"><span class="fw-semibold">Prioridade:</span> @item.Prioridade</p>
                     <p class="card-text"><span class="fw-semibold">Data de Criação:</span> @item.DataCriacao.ToShortDateString()</p>
-                    <p class="card-text"><span class="fw-semibold">Data de Conclusão:</span> @(item.EstaConcluida ? @item.DataConclusao.ToShortDateString() : "Não Concluído")</p>
+                    <p class="card-text"><span class="fw-semibold">Data de Conclusão:</span> @(item.EstaConcluida ? @item.DataConclusao?.ToShortDateString() : "Não Concluído")</p>
 
                     <span class="d-flex gap-1 justify-content-end mt-4">
                         <a href="/tarefas/detalhes/@item.Id" class="btn btn-secondary">

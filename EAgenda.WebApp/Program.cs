@@ -11,6 +11,7 @@ using EAgenda.Infraestrutura.SqlServer.ModuloContato;
 using EAgenda.WebApp.ActionFilters;
 using EAgenda.WebApp.DependencyInjection;
 using EAgenda.Infraestrutura.SqlServer.ModuloCompromisso;
+using EAgenda.Infraestrutura.SqlServer.ModuloTarefa;
 
 namespace EAgenda.WebApp;
 
@@ -31,7 +32,7 @@ public class Program
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoEmSql>();
         builder.Services.AddScoped<IRepositorioContato, RepositorioContatoEmSql>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaEmArquivo>();
-        builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaEmArquivo>();
+        builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaEmSql>();
 
         builder.Services.AddSerilogConfig(builder.Logging);
 

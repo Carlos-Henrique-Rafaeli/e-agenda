@@ -86,7 +86,7 @@ public class DetalhesTarefaViewModel
     public string Titulo { get; set; }
     public Prioridade Prioridade { get; set; }
     public DateTime DataCriacao { get; set; }
-    public DateTime DataConclusao { get; set; }
+    public DateTime? DataConclusao { get; set; }
     public bool EstaConcluida { get; set; }
     public decimal PercentualConcluido { get; set; }
     public List<ItemTarefaViewModel> ItensTarefas { get; set; }
@@ -96,7 +96,7 @@ public class DetalhesTarefaViewModel
         string titulo, 
         Prioridade prioridade, 
         DateTime dataCriacao, 
-        DateTime dataConclusao, 
+        DateTime? dataConclusao, 
         bool estaConcluida, 
         decimal percentualConcluido, 
         List<ItemTarefa> itensTarefas)

@@ -9,12 +9,10 @@ namespace EAgenda.WebApp.Controllers;
 [Route("tarefas")]
 public class TarefaController : Controller
 {
-    private readonly ContextoDados contexto;
     private readonly IRepositorioTarefa repositorioTarefa;
 
-    public TarefaController(ContextoDados contexto, IRepositorioTarefa repositorioTarefa)
+    public TarefaController(IRepositorioTarefa repositorioTarefa)
     {
-        this.contexto = contexto;
         this.repositorioTarefa = repositorioTarefa;
     }
 
@@ -35,7 +33,7 @@ public class TarefaController : Controller
                 registros = repositorioTarefa.SelecionarTarefasPorPrioridade();
                 break;
             default:
-                registros = repositorioTarefa.SelecionarRegistros();
+                registros = repositorioTarefa.SelecionarTarefas();
                 break;
         }
 
@@ -56,9 +54,23 @@ public class TarefaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarTarefaViewModel cadastrarVM)
     {
+        var registros = repositorioTarefa.SelecionarTarefas();
+
+        foreach (var item in registros)
+        {
+            if (item.Titulo.Equals(cadastrarVM.Titulo))
+            {
+                ModelState.AddModelError("CadastroUnico", "Já existe uma tarefa registrada com este título.");
+                break;
+            }
+        }
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVM);
+
         var entidade = cadastrarVM.ParaEntidade();
 
-        repositorioTarefa.CadastrarRegistro(entidade);
+        repositorioTarefa.Cadastrar(entidade);
 
         return RedirectToAction(nameof(Index));
     }
@@ -66,7 +78,10 @@ public class TarefaController : Controller
     [HttpGet("editar/{id:guid}")]
     public IActionResult Editar(Guid id)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
+
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
         var editarVM = new EditarTarefaViewModel
         {
@@ -83,9 +98,23 @@ public class TarefaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Editar(Guid id, EditarTarefaViewModel editarVM)
     {
+        var registros = repositorioTarefa.SelecionarTarefas();
+
+        foreach (var item in registros)
+        {
+            if (!item.Id.Equals(id) && item.Titulo.Equals(editarVM.Titulo))
+            {
+                ModelState.AddModelError("CadastroUnico", "Já existe uma tarefa registrada com este título.");
+                break;
+            }
+        }
+
+        if (!ModelState.IsValid)
+            return View(editarVM);
+
         var entidade = editarVM.ParaEntidade();
 
-        repositorioTarefa.EditarRegistro(id, entidade);
+        repositorioTarefa.Editar(id, entidade);
 
         return RedirectToAction(nameof(Index));
     }
@@ -93,7 +122,10 @@ public class TarefaController : Controller
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
+
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
         var excluirVM = new ExcluirTarefaViewModel
         {
@@ -107,7 +139,7 @@ public class TarefaController : Controller
     [HttpPost("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id, ExcluirTarefaViewModel excluirVM)
     {
-        repositorioTarefa.ExcluirRegistro(id);
+        repositorioTarefa.Excluir(id);
         
         return RedirectToAction(nameof(Index));
     }
@@ -115,7 +147,7 @@ public class TarefaController : Controller
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id, 
@@ -125,7 +157,7 @@ public class TarefaController : Controller
             registro.DataConclusao, 
             registro.EstaConcluida, 
             registro.PercentualConcluido, 
-            registro.ItensTarefas);
+            registro.Itens);
 
         return View(detalhesVM);
     }
@@ -133,13 +165,16 @@ public class TarefaController : Controller
     [HttpPost, Route("/tarefas/{id:guid}/adicionar-item")]
     public IActionResult AdicionarTarefa(Guid id, AdicionarItemTarefaViewModel adicionarVM)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
+
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
         var novoItem = new ItemTarefa(adicionarVM.Titulo, registro);
 
-        registro.ItensTarefas.Add(novoItem);
+        registro.AdicionarItem(novoItem);
 
-        contexto.Salvar();
+        repositorioTarefa.AdicionarItem(novoItem);
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -149,7 +184,7 @@ public class TarefaController : Controller
             registro.DataConclusao,
             registro.EstaConcluida,
             registro.PercentualConcluido,
-            registro.ItensTarefas);
+            registro.Itens);
 
         return View("Detalhes", detalhesVM);
     }
@@ -157,19 +192,21 @@ public class TarefaController : Controller
     [HttpPost, Route("/tarefas/{id:guid}/remover-item/{idItem:guid}")]
     public IActionResult RemoverTarefa(Guid id, Guid idItem)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
-        
-        foreach (var i in registro.ItensTarefas)
-        {
-            if (i.Id == idItem)
-            {
-                registro.ItensTarefas.Remove(i);
-                break;
-            }
-        }
-        
-        contexto.Salvar();
-        
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
+
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
+
+        var itemSelecionado = registro.ObterItem(idItem);
+
+        if (itemSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
+        registro.RemoverItem(itemSelecionado);
+
+        repositorioTarefa.RemoverItem(itemSelecionado);
+
+
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
             registro.Titulo,
@@ -178,7 +215,7 @@ public class TarefaController : Controller
             registro.DataConclusao,
             registro.EstaConcluida,
             registro.PercentualConcluido,
-            registro.ItensTarefas);
+            registro.Itens);
         
         return View("Detalhes", detalhesVM);
     }
@@ -186,18 +223,19 @@ public class TarefaController : Controller
     [HttpPost, Route("/tarefas/{id:guid}/concluir-item/{idItem:guid}")]
     public IActionResult Concluir(Guid id, Guid idItem)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
 
-        foreach (var i in registro.ItensTarefas)
-        {
-            if (i.Id == idItem)
-            {
-                i.EstaConcluida = true;
-                break;
-            }
-        }
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
-        contexto.Salvar();
+        var itemSelecionado = registro.ObterItem(idItem);
+
+        if (itemSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
+        itemSelecionado.Concluir();
+
+        repositorioTarefa.AtualizarItem(itemSelecionado);
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -207,7 +245,7 @@ public class TarefaController : Controller
             registro.DataConclusao,
             registro.EstaConcluida,
             registro.PercentualConcluido,
-            registro.ItensTarefas);
+            registro.Itens);
 
         return View("Detalhes", detalhesVM);
     }
@@ -215,18 +253,19 @@ public class TarefaController : Controller
     [HttpPost, Route("/tarefas/{id:guid}/desconcluir-item/{idItem:guid}")]
     public IActionResult DesConcluir(Guid id, Guid idItem)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
 
-        foreach (var i in registro.ItensTarefas)
-        {
-            if (i.Id == idItem)
-            {
-                i.EstaConcluida = false;
-                break;
-            }
-        }
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
-        contexto.Salvar();
+        var itemSelecionado = registro.ObterItem(idItem);
+
+        if (itemSelecionado is null)
+            return RedirectToAction(nameof(Index));
+
+        itemSelecionado.MarcarPendente();
+
+        repositorioTarefa.AtualizarItem(itemSelecionado);
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -236,7 +275,7 @@ public class TarefaController : Controller
             registro.DataConclusao,
             registro.EstaConcluida,
             registro.PercentualConcluido,
-            registro.ItensTarefas);
+            registro.Itens);
 
         return View("Detalhes", detalhesVM);
     }
@@ -245,12 +284,14 @@ public class TarefaController : Controller
     [HttpPost, Route("/tarefas/{id:guid}/concluir-tarefa")]
     public IActionResult Concluir(Guid id)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
 
-        registro.EstaConcluida = true;
-        registro.DataConclusao = DateTime.Now;
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
-        contexto.Salvar();
+        registro.Concluir();
+
+        repositorioTarefa.Editar(id, registro);
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -260,7 +301,7 @@ public class TarefaController : Controller
             registro.DataConclusao,
             registro.EstaConcluida,
             registro.PercentualConcluido,
-            registro.ItensTarefas);
+            registro.Itens);
 
         return View("Detalhes", detalhesVM);
     }
@@ -268,12 +309,14 @@ public class TarefaController : Controller
     [HttpPost, Route("/tarefas/{id:guid}/desconcluir-tarefa")]
     public IActionResult DesConcluir(Guid id)
     {
-        var registro = repositorioTarefa.SelecionarRegistroPorId(id);
+        var registro = repositorioTarefa.SelecionarTarefaPorId(id);
 
-        registro.EstaConcluida = false;
-        registro.DataConclusao = DateTime.MinValue;
+        if (registro is null)
+            return RedirectToAction(nameof(Index));
 
-        contexto.Salvar();
+        registro.MarcarPendente();
+
+        repositorioTarefa.Editar(id, registro);
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -283,7 +326,7 @@ public class TarefaController : Controller
             registro.DataConclusao,
             registro.EstaConcluida,
             registro.PercentualConcluido,
-            registro.ItensTarefas);
+            registro.Itens);
 
         return View("Detalhes", detalhesVM);
     }

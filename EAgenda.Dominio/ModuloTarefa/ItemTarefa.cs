@@ -17,6 +17,16 @@ public class ItemTarefa : EntidadeBase<ItemTarefa>
         EstaConcluida = false;
     }
 
+    public void Concluir()
+    {
+        EstaConcluida = true;
+    }
+
+    public void MarcarPendente()
+    {
+        EstaConcluida = false;
+    }
+
     public override void AtualizarRegistro(ItemTarefa registroEditado)
     {
         throw new NotImplementedException();
