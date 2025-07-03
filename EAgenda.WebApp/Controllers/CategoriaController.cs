@@ -10,18 +10,11 @@ namespace EAgenda.WebApp.Controllers;
 [Route("categorias")]
 public class CategoriaController : Controller
 {
-    private readonly ContextoDados contextoDados;
     private readonly IRepositorioCategoria repositorioCategoria;
-    private readonly IRepositorioDespesa repositorioDespesa;
 
-    public CategoriaController(
-        ContextoDados contexto, 
-        IRepositorioCategoria repositorioCategoria, 
-        IRepositorioDespesa repositorioDespesa)
+    public CategoriaController(IRepositorioCategoria repositorioCategoria)
     {
-        contextoDados = contexto;
         this.repositorioCategoria = repositorioCategoria;
-        this.repositorioDespesa = repositorioDespesa;
     }
 
     public IActionResult Index()

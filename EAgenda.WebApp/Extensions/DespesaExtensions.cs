@@ -6,14 +6,13 @@ namespace EAgenda.WebApp.Extensions;
 
 public static class DespesaExtensions
 {
-    public static Despesa ParaEntidade(this FormularioDespesaViewModel formularioVM, List<Categoria> categorias)
+    public static Despesa ParaEntidade(this FormularioDespesaViewModel formularioVM)
     {
         return new Despesa(
-            formularioVM.Descricao, 
+            formularioVM.Descricao,
+            formularioVM.Valor,
             formularioVM.DataOcorrencia,
-            formularioVM.Valor, 
-            formularioVM.FormaPagamento,
-            categorias
+            formularioVM.FormaPagamento
         );
     }
 
@@ -22,8 +21,8 @@ public static class DespesaExtensions
         return new DetalhesDespesaViewModel(
                 despesa.Id,
                 despesa.Descricao,
-                despesa.DataOcorrencia ?? DateTime.Now,
                 despesa.Valor,
+                despesa.DataOcorencia,
                 despesa.FormaPagamento,
                 despesa.Categorias
         );

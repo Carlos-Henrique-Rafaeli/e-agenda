@@ -11,14 +11,11 @@ public class ContatoController : Controller
 {
     private readonly IRepositorioContato repositorioContato;
     private readonly IRepositorioCompromisso repositorioCompromisso;
-    private readonly ContextoDados contextoDados;
 
     public ContatoController(
-        ContextoDados contexto, 
         IRepositorioContato repositorioContato, 
         IRepositorioCompromisso repositorioCompromisso)
     {
-        contextoDados = contexto;
         this.repositorioContato = repositorioContato;
         this.repositorioCompromisso = repositorioCompromisso;
     }
