@@ -10,7 +10,11 @@ public class Contato : EntidadeBase<Contato>
     public string Cargo { get; set; }
     public string Empresa { get; set; }
 
-    public Contato(string nome, string email, string telefone, string cargo, string empresa)
+    public Contato()
+    {
+    }
+
+    public Contato(string nome, string email, string telefone, string cargo, string empresa) : this()
     {
         Nome = nome;
         Email = email;

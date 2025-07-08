@@ -3,10 +3,6 @@ using EAgenda.Dominio.ModuloCategoria;
 using EAgenda.Dominio.ModuloContato;
 using EAgenda.Dominio.ModuloDespesa;
 using EAgenda.Dominio.ModuloTarefa;
-using EAgenda.Infraestrutura.Arquivos.Compartilhado;
-using EAgenda.Infraestrutura.Arquivos.ModuloCategoria;
-using EAgenda.Infraestrutura.Arquivos.ModuloDespesa;
-using EAgenda.Infraestrutura.Arquivos.ModuloTarefa;
 using EAgenda.Infraestrutura.SqlServer.ModuloContato;
 using EAgenda.WebApp.ActionFilters;
 using EAgenda.WebApp.DependencyInjection;
@@ -14,6 +10,8 @@ using EAgenda.Infraestrutura.SqlServer.ModuloCompromisso;
 using EAgenda.Infraestrutura.SqlServer.ModuloTarefa;
 using EAgenda.Infraestrutura.SqlServer.ModuloDespesa;
 using EAgenda.Infraestrutura.SqlServer.ModuloCategoria;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace EAgenda.WebApp;
 
@@ -28,6 +26,14 @@ public class Program
             options.Filters.Add<ValidarModeloAttribute>();
             options.Filters.Add<LogarAcaoAttribute>();
         });
+
+        builder.Services.AddScoped<IDbConnection>(provider =>
+        {
+            var connectionString = builder.Configuration["SQL_CONNECTION_STRING"];
+
+            return new SqlConnection(connectionString);
+        });
+
 
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEmSql>();
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoEmSql>();

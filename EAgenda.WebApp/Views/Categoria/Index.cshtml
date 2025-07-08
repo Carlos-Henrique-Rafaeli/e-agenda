@@ -28,24 +28,7 @@
         <div class="col-12 col-md-3">
             <div class="card border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Título: #@item.Titulo</h5>
-
-                    <p class="card-text">
-                        <span class="fw-semibold">Despesas:</span><br />
-                        @if (item.NomesDespesas != null && item.NomesDespesas.Any())
-                        {
-                            <ul class="mb-0">
-                                @foreach (var nome in item.NomesDespesas)
-                                {
-                                    <li>@nome</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <em>Nenhuma despesa vinculada</em>
-                        }
-                    </p>
+                    <h5 class="card-title">Título: @item.Titulo</h5>
 
                     <span class="d-flex gap-1 justify-content-end mt-4">
                         <a href="/categorias/detalhes/@item.Id" class="btn btn-secondary opcao-card">
