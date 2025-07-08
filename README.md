@@ -7,8 +7,7 @@ Desenvolvido durante o curso Fullstack da [Academia do Programador](https://www.
 
 ## Descrição
 
-Este projeto tem como objetivo desenvolver um sistema de gestão para um ambiente relacionado à gestão de medicamentos, pacientes, fornecedores, funcionários e prescrições médicas. Este sistema é responsável
-por registrar, visualizar, editar e excluir dados de fornecedores, pacientes, medicamentos, funcionários, requisições de entrada e saída de medicamentos, além de gerar relatórios relacionados às prescrições médicas.
+O sistema E-Agenda permite o gerenciamento completo de compromissos pessoais e profissionais, com cadastro de contatos, tarefas, despesas, categorias e compromissos. É possível organizar e visualizar compromissos por data e tipo, registrar tarefas com prioridades e progresso, gerenciar contatos com validações específicas, controlar despesas por categorias e consultar informações agrupadas por relevância e status de conclusão.
 
 ## Detalhes e Funcionalidades
 
@@ -71,7 +70,7 @@ por registrar, visualizar, editar e excluir dados de fornecedores, pacientes, me
 
 #### Clone o Repositório
 ```
-https://github.com/alquimia-do-programador/e-agenda
+https://github.com/Carlos-Henrique-Rafaeli/e-agenda
 ```
 
 #### Navegue até a pasta raiz da solução
