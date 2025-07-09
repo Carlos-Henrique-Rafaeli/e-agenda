@@ -3,21 +3,20 @@ using EAgenda.Dominio.ModuloCompromisso;
 using EAgenda.Infraestrutura.Arquivos.Compartilhado;
 using EAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using EAgenda.Infraestrutura.Orm.Compartilhado;
 
 namespace EAgenda.WebApp.Controllers;
 
 [Route("contatos")]
 public class ContatoController : Controller
 {
+    private readonly EAgendaDbContext contexto;
     private readonly IRepositorioContato repositorioContato;
-    private readonly IRepositorioCompromisso repositorioCompromisso;
 
-    public ContatoController(
-        IRepositorioContato repositorioContato, 
-        IRepositorioCompromisso repositorioCompromisso)
+    public ContatoController(EAgendaDbContext contexto, IRepositorioContato repositorioContato)
     {
+        this.contexto = contexto;
         this.repositorioContato = repositorioContato;
-        this.repositorioCompromisso = repositorioCompromisso;
     }
 
     public IActionResult Index()
@@ -36,10 +35,6 @@ public class ContatoController : Controller
     [HttpPost("cadastrar")]
     public IActionResult Cadastrar(CadastrarContatoViewModel vm)
     {
-        if (!ModelState.IsValid)
-            return View(vm);
-
-        // Verifica duplicidade de email ou telefone
         var contatosExistentes = repositorioContato.SelecionarRegistros();
 
         if (contatosExistentes.Any(c => c.Email.Equals(vm.Email, StringComparison.OrdinalIgnoreCase)))
@@ -54,7 +49,26 @@ public class ContatoController : Controller
             return View(vm);
         }
 
-        repositorioContato.CadastrarRegistro(vm.ParaEntidade());
+        if (!ModelState.IsValid)
+            return View(vm);
+
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioContato.CadastrarRegistro(vm.ParaEntidade());
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
+
 
         return RedirectToAction(nameof(Index));
     }
@@ -75,9 +89,6 @@ public class ContatoController : Controller
     [HttpPost("editar/{id:guid}")]
     public IActionResult Editar(Guid id, EditarContatoViewModel vm)
     {
-        if (!ModelState.IsValid)
-            return View(vm);
-
         var contatosExistentes = repositorioContato.SelecionarRegistros().Where(c => c.Id != id);
 
         if (contatosExistentes.Any(c => c.Email.Equals(vm.Email, StringComparison.OrdinalIgnoreCase)))
@@ -92,7 +103,26 @@ public class ContatoController : Controller
             return View(vm);
         }
 
-        repositorioContato.EditarRegistro(id, vm.ParaEntidade());
+        if (!ModelState.IsValid)
+            return View(vm);
+
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioContato.EditarRegistro(id, vm.ParaEntidade());
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
+
 
         return RedirectToAction(nameof(Index));
     }
@@ -114,9 +144,23 @@ public class ContatoController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult ExcluirConfirmado(Guid id)
     {
-        repositorioContato.ExcluirRegistro(id);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioContato.ExcluirRegistro(id);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
-
 }

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAgenda.Infraestrutura.SqlS
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "EAgenda.Infraestrutura.Database", "EAgenda.Infraestrutura.Database\EAgenda.Infraestrutura.Database.sqlproj", "{24D9C88F-BB21-4618-B282-B906E8481B23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EAgenda.Infraestrutura.Orm", "EAgenda.Infraestrutura.Orm\EAgenda.Infraestrutura.Orm.csproj", "{B9BD46E9-00A9-4693-9BB5-58C2E01733EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{24D9C88F-BB21-4618-B282-B906E8481B23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24D9C88F-BB21-4618-B282-B906E8481B23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24D9C88F-BB21-4618-B282-B906E8481B23}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B9BD46E9-00A9-4693-9BB5-58C2E01733EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9BD46E9-00A9-4693-9BB5-58C2E01733EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9BD46E9-00A9-4693-9BB5-58C2E01733EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9BD46E9-00A9-4693-9BB5-58C2E01733EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{F1EE2CEB-4012-4B37-BCC1-62F1D460533F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6E1C4EB2-AE92-4C97-BBCA-CB29D7B27F90} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{24D9C88F-BB21-4618-B282-B906E8481B23} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B9BD46E9-00A9-4693-9BB5-58C2E01733EA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF462154-9DE2-4FA8-A2C0-3E6E839BF7D3}
