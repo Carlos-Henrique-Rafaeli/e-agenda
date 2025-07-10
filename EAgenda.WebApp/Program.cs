@@ -5,13 +5,13 @@ using EAgenda.Dominio.ModuloDespesa;
 using EAgenda.Dominio.ModuloTarefa;
 using EAgenda.WebApp.ActionFilters;
 using EAgenda.WebApp.DependencyInjection;
-using EAgenda.Infraestrutura.SqlServer.ModuloCompromisso;
 using EAgenda.Infraestrutura.SqlServer.ModuloTarefa;
 using EAgenda.Infraestrutura.SqlServer.ModuloDespesa;
 using EAgenda.Infraestrutura.SqlServer.ModuloCategoria;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using EAgenda.Infraestrutura.Orm.ModuloContato;
+using EAgenda.Infraestrutura.Orm.ModuloCompromisso;
 
 namespace EAgenda.WebApp;
 
@@ -37,8 +37,8 @@ public class Program
         });
 
         builder.Services.AddScoped<IRepositorioContato, RepositorioContatoEmOrm>();
+        builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoEmOrm>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEmSql>();
-        builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoEmSql>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaEmSql>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaEmSql>();
 
