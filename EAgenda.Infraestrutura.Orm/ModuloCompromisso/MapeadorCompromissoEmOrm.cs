@@ -8,6 +8,10 @@ public class MapeadorCompromissoEmOrm : IEntityTypeConfiguration<Compromisso>
 {
     public void Configure(EntityTypeBuilder<Compromisso> builder)
     {
+        builder.Property(x => x.Id)
+            .ValueGeneratedNever()
+            .IsRequired();
+
         builder.Property(x => x.Assunto)
             .HasMaxLength(100)
             .IsRequired();

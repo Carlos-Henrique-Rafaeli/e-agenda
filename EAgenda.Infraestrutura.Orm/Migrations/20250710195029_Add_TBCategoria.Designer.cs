@@ -4,6 +4,7 @@ using EAgenda.Infraestrutura.Orm.Compartilhado;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EAgenda.Infraestrutura.Orm.Migrations
 {
     [DbContext(typeof(EAgendaDbContext))]
-    partial class EAgendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710195029_Add_TBCategoria")]
+    partial class Add_TBCategoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace EAgenda.Infraestrutura.Orm.Migrations
 
                     b.HasIndex("DespesasId");
 
-                    b.ToTable("DespesaCategoria", (string)null);
+                    b.ToTable("CategoriaDespesa", (string)null);
                 });
 
             modelBuilder.Entity("EAgenda.Dominio.ModuloCategoria.Categoria", b =>
@@ -49,7 +52,7 @@ namespace EAgenda.Infraestrutura.Orm.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categoria");
                 });
 
             modelBuilder.Entity("EAgenda.Dominio.ModuloCompromisso.Compromisso", b =>
@@ -123,6 +126,7 @@ namespace EAgenda.Infraestrutura.Orm.Migrations
             modelBuilder.Entity("EAgenda.Dominio.ModuloDespesa.Despesa", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DataOcorencia")
@@ -130,19 +134,17 @@ namespace EAgenda.Infraestrutura.Orm.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FormaPagamento")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Valor")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Despesas");
+                    b.ToTable("Despesa");
                 });
 
             modelBuilder.Entity("CategoriaDespesa", b =>

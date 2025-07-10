@@ -9,12 +9,9 @@ public class Despesa : EntidadeBase<Despesa>
     public decimal Valor { get; set; }
     public DateTime DataOcorencia { get; set; }
     public FormaPagamento FormaPagamento { get; set; }
-    public List<Categoria> Categorias { get; set; }
+    public List<Categoria> Categorias { get; set; } = new List<Categoria>();
 
-    public Despesa()
-    {
-        Categorias = new List<Categoria>();
-    }
+    public Despesa() { }
 
     public Despesa(string descricao, decimal valor, DateTime data, FormaPagamento formaPagamento) : this()
     {

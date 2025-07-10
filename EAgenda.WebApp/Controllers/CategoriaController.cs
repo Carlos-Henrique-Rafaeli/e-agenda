@@ -1,6 +1,7 @@
 ﻿using EAgenda.Dominio.ModuloCategoria;
 using EAgenda.Dominio.ModuloDespesa;
 using EAgenda.Infraestrutura.Arquivos.Compartilhado;
+using EAgenda.Infraestrutura.Orm.Compartilhado;
 using EAgenda.WebApp.Extensions;
 using EAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,13 @@ namespace EAgenda.WebApp.Controllers;
 [Route("categorias")]
 public class CategoriaController : Controller
 {
+    private readonly EAgendaDbContext contexto;
     private readonly IRepositorioCategoria repositorioCategoria;
 
-    public CategoriaController(IRepositorioCategoria repositorioCategoria)
+    public CategoriaController(EAgendaDbContext contexto,
+        IRepositorioCategoria repositorioCategoria)
     {
+        this.contexto = contexto;
         this.repositorioCategoria = repositorioCategoria;
     }
 
@@ -58,9 +62,24 @@ public class CategoriaController : Controller
         if (!ModelState.IsValid)
             return View(cadastrarVM);
 
-        var entidade = cadastrarVM.ParaEntidade();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioCategoria.CadastrarRegistro(entidade);
+        try
+        {
+            var entidade = cadastrarVM.ParaEntidade();
+
+            repositorioCategoria.CadastrarRegistro(entidade);
+            
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -96,9 +115,24 @@ public class CategoriaController : Controller
         if (!ModelState.IsValid)
             return View(editarVM);
 
-        var entidadeEditada = editarVM.ParaEntidade();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioCategoria.EditarRegistro(id, entidadeEditada);
+        try
+        {
+            var entidadeEditada = editarVM.ParaEntidade();
+
+            repositorioCategoria.EditarRegistro(id, entidadeEditada);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -130,7 +164,23 @@ public class CategoriaController : Controller
             return View("Index", visualizarVM);
         }
 
-        repositorioCategoria.ExcluirRegistro(id);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioCategoria.ExcluirRegistro(id);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
+
 
         return RedirectToAction(nameof(Index));
     }
