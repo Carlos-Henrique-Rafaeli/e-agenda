@@ -2,6 +2,7 @@
 using EAgenda.Dominio.ModuloCompromisso;
 using EAgenda.Dominio.ModuloContato;
 using EAgenda.Dominio.ModuloDespesa;
+using EAgenda.Dominio.ModuloTarefa;
 using Microsoft.EntityFrameworkCore;
 
 namespace EAgenda.Infraestrutura.Orm.Compartilhado;
@@ -12,6 +13,8 @@ public class EAgendaDbContext : DbContext
     public DbSet<Compromisso> Compromissos { get; set; }
     public DbSet<Categoria> Categorias { get; set; }
     public DbSet<Despesa> Despesas { get; set; }
+    public DbSet<ItemTarefa> Itens { get; set; }
+    public DbSet<Tarefa> Tarefas { get; set; }
 
     public EAgendaDbContext(DbContextOptions options) : base(options) { }
 

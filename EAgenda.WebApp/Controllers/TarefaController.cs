@@ -1,5 +1,6 @@
 ﻿using EAgenda.Dominio.ModuloTarefa;
 using EAgenda.Infraestrutura.Arquivos.Compartilhado;
+using EAgenda.Infraestrutura.Orm.Compartilhado;
 using EAgenda.WebApp.Extensions;
 using EAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,14 @@ namespace EAgenda.WebApp.Controllers;
 [Route("tarefas")]
 public class TarefaController : Controller
 {
+    private readonly EAgendaDbContext contexto;
     private readonly IRepositorioTarefa repositorioTarefa;
 
-    public TarefaController(IRepositorioTarefa repositorioTarefa)
+    public TarefaController(
+        EAgendaDbContext contexto,
+        IRepositorioTarefa repositorioTarefa)
     {
+        this.contexto = contexto;
         this.repositorioTarefa = repositorioTarefa;
     }
 
@@ -68,9 +73,24 @@ public class TarefaController : Controller
         if (!ModelState.IsValid)
             return View(cadastrarVM);
 
-        var entidade = cadastrarVM.ParaEntidade();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.CadastrarRegistro(entidade);
+        try
+        {
+            var entidade = cadastrarVM.ParaEntidade();
+
+            repositorioTarefa.CadastrarRegistro(entidade);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -112,9 +132,24 @@ public class TarefaController : Controller
         if (!ModelState.IsValid)
             return View(editarVM);
 
-        var entidade = editarVM.ParaEntidade();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.EditarRegistro(id, entidade);
+        try
+        {
+            var entidade = editarVM.ParaEntidade();
+
+            repositorioTarefa.EditarRegistro(id, entidade);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -139,7 +174,22 @@ public class TarefaController : Controller
     [HttpPost("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id, ExcluirTarefaViewModel excluirVM)
     {
-        repositorioTarefa.ExcluirRegistro(id);
+        var transacao = contexto.Database.BeginTransaction();
+
+        try
+        {
+            repositorioTarefa.ExcluirRegistro(id);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
         
         return RedirectToAction(nameof(Index));
     }
@@ -170,11 +220,26 @@ public class TarefaController : Controller
         if (registro is null)
             return RedirectToAction(nameof(Index));
 
-        var novoItem = new ItemTarefa(adicionarVM.Titulo, registro);
+        var transacao = contexto.Database.BeginTransaction();
 
-        registro.AdicionarItem(novoItem);
+        try
+        {
+            var novoItem = new ItemTarefa(adicionarVM.Titulo, registro);
 
-        repositorioTarefa.AdicionarItem(novoItem);
+            registro.AdicionarItem(novoItem);
+
+            contexto.Itens.Add(novoItem);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -202,10 +267,22 @@ public class TarefaController : Controller
         if (itemSelecionado is null)
             return RedirectToAction(nameof(Index));
 
-        registro.RemoverItem(itemSelecionado);
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.RemoverItem(itemSelecionado);
+        try
+        {
+            registro.RemoverItem(itemSelecionado);
 
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -233,9 +310,22 @@ public class TarefaController : Controller
         if (itemSelecionado is null)
             return RedirectToAction(nameof(Index));
 
-        itemSelecionado.Concluir();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.AtualizarItem(itemSelecionado);
+        try
+        {
+            itemSelecionado.Concluir();
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -263,9 +353,22 @@ public class TarefaController : Controller
         if (itemSelecionado is null)
             return RedirectToAction(nameof(Index));
 
-        itemSelecionado.MarcarPendente();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.AtualizarItem(itemSelecionado);
+        try
+        {
+            itemSelecionado.MarcarPendente();
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -289,9 +392,24 @@ public class TarefaController : Controller
         if (registro is null)
             return RedirectToAction(nameof(Index));
 
-        registro.Concluir();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.EditarRegistro(id, registro);
+        try
+        {
+            registro.Concluir();
+
+            repositorioTarefa.EditarRegistro(id, registro);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,
@@ -314,9 +432,24 @@ public class TarefaController : Controller
         if (registro is null)
             return RedirectToAction(nameof(Index));
 
-        registro.MarcarPendente();
+        var transacao = contexto.Database.BeginTransaction();
 
-        repositorioTarefa.EditarRegistro(id, registro);
+        try
+        {
+            registro.MarcarPendente();
+
+            repositorioTarefa.EditarRegistro(id, registro);
+
+            contexto.SaveChanges();
+
+            transacao.Commit();
+        }
+        catch (Exception)
+        {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var detalhesVM = new DetalhesTarefaViewModel(
             id,

@@ -4,6 +4,7 @@ using EAgenda.Infraestrutura.Orm.Compartilhado;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EAgenda.Infraestrutura.Orm.Migrations
 {
     [DbContext(typeof(EAgendaDbContext))]
-    partial class EAgendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250711165514_Add_TBTarefa")]
+    partial class Add_TBTarefa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,6 +151,7 @@ namespace EAgenda.Infraestrutura.Orm.Migrations
             modelBuilder.Entity("EAgenda.Dominio.ModuloTarefa.ItemTarefa", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("EstaConcluida")
@@ -158,8 +162,7 @@ namespace EAgenda.Infraestrutura.Orm.Migrations
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -14,7 +14,7 @@ public class DespesaController : Controller
     private readonly EAgendaDbContext contexto;
     private readonly IRepositorioDespesa repositorioDespesa;
     private readonly IRepositorioCategoria repositorioCategoria;
-
+    
     public DespesaController(
         EAgendaDbContext contexto,
         IRepositorioDespesa repositorioDespesa,
@@ -81,7 +81,7 @@ public class DespesaController : Controller
                         if (cs.Equals(cd.Id))
                         {
                             despesa.RegistarCategoria(cd);
-
+                            
                             break;
                         }
                     }
@@ -162,6 +162,7 @@ public class DespesaController : Controller
                         if (categoriaDisponivel.Id.Equals(idSelecionado))
                         {
                             despesaEditada.RegistarCategoria(categoriaDisponivel);
+
                             break;
                         }
                     }

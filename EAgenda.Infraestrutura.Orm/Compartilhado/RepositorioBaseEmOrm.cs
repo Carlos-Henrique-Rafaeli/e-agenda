@@ -5,7 +5,7 @@ namespace EAgenda.Infraestrutura.Orm.Compartilhado;
 
 public abstract class RepositorioBaseEmOrm<T> where T : EntidadeBase<T>
 {
-    private readonly DbSet<T> registros;
+    protected readonly DbSet<T> registros;
 
     public RepositorioBaseEmOrm(EAgendaDbContext contexto)
     {
