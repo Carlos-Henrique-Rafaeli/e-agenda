@@ -31,13 +31,6 @@ public class Program
 
         builder.Services.AddEntityFrameworkConfig(builder.Configuration);
 
-        builder.Services.AddScoped<IDbConnection>(provider =>
-        {
-            var connectionString = builder.Configuration["SQL_CONNECTION_STRING"];
-
-            return new SqlConnection(connectionString);
-        });
-
         builder.Services.AddScoped<IRepositorioContato, RepositorioContatoEmOrm>();
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoEmOrm>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEmOrm>();
