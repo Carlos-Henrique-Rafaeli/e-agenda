@@ -5,15 +5,12 @@ using EAgenda.Dominio.ModuloDespesa;
 using EAgenda.Dominio.ModuloTarefa;
 using EAgenda.WebApp.ActionFilters;
 using EAgenda.WebApp.DependencyInjection;
-using EAgenda.Infraestrutura.SqlServer.ModuloTarefa;
-using EAgenda.Infraestrutura.SqlServer.ModuloDespesa;
-using Microsoft.Data.SqlClient;
-using System.Data;
 using EAgenda.Infraestrutura.Orm.ModuloContato;
 using EAgenda.Infraestrutura.Orm.ModuloCompromisso;
 using EAgenda.Infraestrutura.Orm.ModuloCategoria;
 using EAgenda.Infraestrutura.Orm.ModuloDespesa;
 using EAgenda.Infraestrutura.Orm.ModuloTarefa;
+using EAgenda.WebApp.Orm;
 
 namespace EAgenda.WebApp;
 
@@ -45,6 +42,8 @@ public class Program
             app.UseExceptionHandler("/erro");
         else
             app.UseDeveloperExceptionPage();
+
+        app.ApplyMigrations();
 
         app.UseAntiforgery();
         app.UseStaticFiles();
